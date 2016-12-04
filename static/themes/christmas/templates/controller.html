@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Controller{% endblock %}
+{% block content %}
+    {% include "question.html" %}
+    <div id="answer-box">
+
+    </div>
+{% endblock %}
+{% block scripts %}
+<script>
+    var answerBox = document.getElementById("answer-box");
+    answered = false;
+    var data;
+
+    var multipleChoiceHtml = ' \
+            <div class="multiple-choice-container"> \
+                <div class="multiple-choice-button" id="answer-1" style="background-color:rgb(255, 69, 69)"></div> \
+                <div class="multiple-choice-button" id="answer-2" style="background-color:rgb(255, 253, 69)"></div> \
+                <div class="multiple-choice-button" id="answer-3" style="background-color:rgb(84, 255, 69)"></div> \
+                <div class="multiple-choice-button" id="answer-4" style="background-color:rgb(69, 149, 255)"></div> \
+            </div>'
+
+    function getData(){
+        $.getJSON(URL + "session_data", function(response) {
+            data = response;
+            if ($(answerBox).attr("type") != "multiple-choice") {
+                if (data["questions"][data["session"]["cur_question"]]["answer_type"] == "multiple-choice") {
+                    $(answerBox).attr("type", "multiple-choice")
+                    $(answerBox).html(multipleChoiceHtml);
+                }
+            }
+        });
+        setTimeout(getData, 10000);
+    }
+    getData();
+
+    {% if question.answer_type == "multiple-choice" %}
+        $(".answer").click(function (event) {
+            if (answered == false) {
+                answered = true;
+                caller = event.target.id;
+                answer = caller.slice(-1);
+                console.log(answer);
+                $.getJSON( URL + "send_answer?team_id=" + teamName, function(data) {
+
+                });
+            } else {
+                if (supportsVibrate) {
+                    navigator.vibrate(75);
+                }
+            }
+        })
+    {% endif %}
+</script>
+{% endblock %}

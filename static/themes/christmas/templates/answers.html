@@ -1,0 +1,19 @@
+{% if question.answer_type == "multiple-choice" %}
+    <ul class="answers">
+    {% for answer in question.answers %}
+        <li class="answer" id="answer-{{loop.index}}" style="background:
+                {% if loop.index == 1 %}
+                    rgb(255, 69, 69); {# RED #}
+                {% elif loop.index == 2 %}
+                    rgb(255, 253, 69); {# YELLOW #}
+                {% elif loop.index == 3 %}
+                    rgb(84, 255, 69); {# GREEN #}
+                {% elif loop.index == 4 %}
+                    rgb(69, 149, 255); {# BLUE #}
+                {% endif %}
+        ">
+            {{ answer }}
+        </li>
+    {% endfor %}
+    </ul>
+{% endif %}

@@ -1,0 +1,15 @@
+<div class="quiz">
+    {% if question.question_type == "text" %}
+        <p class="question">
+          {{question.question}}
+        </p>
+    {% elif question.question_type == "audio" %}
+        <p class="question">
+            {{question.question}}
+            <br>
+            <audio controls autoplay>
+                <source src="{{question.audio}}">
+            </audio>
+        </p>
+    {% endif %}
+</div>

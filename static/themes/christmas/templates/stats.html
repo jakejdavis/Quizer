@@ -1,0 +1,9 @@
+<div class="stats">
+    {% for team in session.teams %}
+        <div class="stat">
+            <img src="static/themes/{{config.theme}}/team-icons/team-{{team.id}}.png">
+            <p class="team-stats-name">{{team.name}}
+            <p class="team-stats-score">{{team.score}}</p>
+        </div>
+    {% endfor %}
+</div>

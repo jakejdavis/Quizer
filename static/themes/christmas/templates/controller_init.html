@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Controller{% endblock %}
+{% block content %}
+<div class="controller-inputs">
+    <input type="text" placeholder="Team Name" id="team-name" style="flex-grow: 2" autofocus>
+    <input type="button" value="Submit" onclick="registerController()">
+</div>
+<script>
+teamNameInput = document.getElementById("team-name");
+function registerController() {
+    teamName = teamNameInput.value;
+
+    $.getJSON( URL + "register_controller?name=" + teamName, function(data) {
+        if (data.response == "success") {
+            window.location.replace(window.location.origin + "/controller?id=" + data.id);
+        }
+    });
+}
+</script>
+{% endblock %}
