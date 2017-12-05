@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Stats{% endblock %}
+{% block content %}
+    <div class="stats">
+
+    </div>
+
+
+{% endblock %}
+{% block scripts %}
+    {% raw %}
+    <script>
+        var statTemplate = ' \
+            {{#each session.teams}} \
+                <div class="stat"> \
+                    <img src="static/themes/{{../config.theme}}/team-icons/team-{{this.id}}.png"> \
+                    <p class="team-stats-name">{{this.name}} \
+                    <p class="team-stats-score">{{this.score}}</p> \
+                </div> \
+            {{/each}}';
+
+        function getData(){
+            $.getJSON(URL + "session_data", function(response) {
+                    $(".stats").html(Handlebars.compile(statTemplate)(response));
+            });
+        }
+        getData();
+
+    </script>
+    {% endraw %}
+{% endblock %}

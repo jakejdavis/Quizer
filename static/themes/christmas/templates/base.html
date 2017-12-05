@@ -5,10 +5,11 @@
     <meta http-equiv="x-ua-compatible" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <meta name="theme-color" content="#E64545">
+    <meta name="theme-color" content="#20464c">
     <meta name="mobile-web-app-capable" content="yes">
 
-    <link rel="stylesheet" href="static/themes/{{config.theme}}/style.min.css" />
+    <link rel="stylesheet" href="static/themes/{{config.theme}}/style.css" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <title>{% block title %}{% endblock %} - Quiz</title>
 </head>
 <body>
@@ -16,11 +17,27 @@
     <div id="content">{% block content %}{% endblock %}</div>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="static/themes/{{config.theme}}/scripts/snow.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js"></script>
     <script>
-        var URL = "http://localhost:5000/";
+        var URL = "http://jakey.zapto.org:5000/";
 
         var supportsVibrate = "vibrate" in navigator;
+
+        Handlebars.registerHelper("ifCond",function(a,b,c,d){switch(b){case"==":return a==c?d.fn(this):d.inverse(this);case"===":return a===c?d.fn(this):d.inverse(this);case"!=":return a!=c?d.fn(this):d.inverse(this);case"!==":return a!==c?d.fn(this):d.inverse(this);case"<":return a<c?d.fn(this):d.inverse(this);case"<=":return a<=c?d.fn(this):d.inverse(this);case">":return a>c?d.fn(this):d.inverse(this);case">=":return a>=c?d.fn(this):d.inverse(this);case"&&":return a&&c?d.fn(this):d.inverse(this);case"||":return a||c?d.fn(this):d.inverse(this);default:return d.inverse(this)}});
+    
+        $.urlParam = function(name){
+            var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+            if (results==null){
+            return null;
+            }
+            else{
+            return results[1] || 0;
+            }
+        }
     </script>
     {% block scripts %}{% endblock %}
+    <div class="village">
+        {% include "village.svg" %}
+    </div>
 </body>
 </html>

@@ -1,7 +1,88 @@
 {% extends "base.html" %}
 {% block title %}Play{% endblock %}
 {% block content %}
-    {% include "stats.html" %}
-    {% include "question.html" %}
-    {% include "answers.html" %}
+    <div class="stats">
+        <div class="teams-loading">
+            {% include "loading.html" %}
+        </div>
+    </div>
+
+
+    <div class="quiz">
+
+    </div>
+
+    <div class="answers">
+
+    </div>
+
+{% endblock %}
+{% block scripts %}
+    {% raw %}
+    <script>
+        var statTemplate = ' \
+            {{#each session.teams}} \
+                <div class="stat"> \
+                    <img src="static/themes/{{../config.theme}}/team-icons/team-{{this.id}}.png"> \
+                    {{#ifCond this.answer.question \'==\' session.cur_question}} \
+                        <i class="fa fa-check-circle" aria-hidden="true"></i> \
+                    {{/ifCond}} \
+                    <p class="team-stats-name">{{this.name}} \
+                    <p class="team-stats-score">{{this.score}}</p> \
+                </div> \
+            {{/each}}';
+
+        var questionTemplate = ' \
+            <p class="question"> \
+                {{question.question}} \
+                {{#if question.audio }} \
+                    <br> \
+                    <audio controls autoplay> \
+                        <source src="{{question.audio}}"> \
+                    </audio> \
+                {{/if}} \
+            </p>';
+
+        var answersTemplate = ' \
+                <ul class="answers"> \
+                    {{#each question.answers }} \
+                        <li class="answer" id="answer-{{@index}}" style="background: \
+                                {{#ifCond @index \'==\' 0 }} \
+                                    rgb(255, 69, 69); \
+                                {{/ifCond}} \
+                                {{#ifCond @index \'==\' 1 }} \
+                                    rgb(255, 253, 69); \
+                                {{/ifCond}} \
+                                {{#ifCond @index \'==\' 2 }} \
+                                    rgb(84, 255, 69); \
+                                {{/ifCond}} \
+                                {{#ifCond @index \'==\' 3 }} \
+                                    rgb(69, 149, 255); \
+                                {{/ifCond}} \
+                        "> \
+                            {{this}} \
+                        </li> \
+                    {{/each}} \
+                </ul>';
+
+        function getData(){
+            $.getJSON(URL + "session_data", function(response) {
+                if (response["session"]["status"] == "waiting-for-teams") {
+                    $(".stats").html(Handlebars.compile(statTemplate)(response));
+                    $(".quiz").html("");
+                    $(".answers").html("Waiting for teams...");
+                } else if (response["session"]["status"] == "accepting-answers") {
+                    $(".stats").html(Handlebars.compile(statTemplate)(response));
+                    $(".quiz").html(Handlebars.compile(questionTemplate)(response));
+                    $(".answers").html(Handlebars.compile(answersTemplate)(response));  
+                } else if (response["session"]["status"] == "endgame") {
+                    window.location.reload(true);
+                }
+            });
+            setTimeout(getData, 5000);
+        }
+        getData();
+
+    </script>
+    {% endraw %}
 {% endblock %}

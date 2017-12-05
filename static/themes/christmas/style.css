@@ -1,5 +1,5 @@
 body {
-    background-color: #e06868;
+    background-color: #397a85;
     font-family: sans-serif;
     color: #fff;
     user-select: none;
@@ -63,8 +63,9 @@ input {
     margin: 5px
 }
 
-input[type=button] {
-    background-color: #ffd4d4
+input[type=submit] {
+    background-color: #20464c;
+    color: #ffffff;
 }
 
 .controller-inputs {
@@ -94,4 +95,17 @@ input[type=button] {
 
 .inactive {
     filter: grayscale(70%);
+}
+
+.village {
+    position: fixed;
+    bottom: -4px;
+    left: 0;
+    width: 100vw;
+    z-index: -1;
+}
+
+.waiting-for-teams {
+    text-align: center;
+    font-size: larger;
 }

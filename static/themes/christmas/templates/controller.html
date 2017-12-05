@@ -1,47 +1,47 @@
 {% extends "base.html" %}
 {% block title %}Controller{% endblock %}
 {% block content %}
-    {% include "question.html" %}
-    <div id="answer-box">
+    <div id="container">
 
     </div>
 {% endblock %}
 {% block scripts %}
 <script>
-    var answerBox = document.getElementById("answer-box");
+    var container = document.getElementById("container");
     answered = false;
     var data;
 
-    var multipleChoiceHtml = ' \
+    var buttonsTemplate = ' \
             <div class="multiple-choice-container"> \
-                <div class="multiple-choice-button" id="answer-1" style="background-color:rgb(255, 69, 69)"></div> \
-                <div class="multiple-choice-button" id="answer-2" style="background-color:rgb(255, 253, 69)"></div> \
-                <div class="multiple-choice-button" id="answer-3" style="background-color:rgb(84, 255, 69)"></div> \
-                <div class="multiple-choice-button" id="answer-4" style="background-color:rgb(69, 149, 255)"></div> \
-            </div>'
+                <button class="multiple-choice-button" id="answer-0" style="background-color:rgb(255, 69, 69)"></button> \
+                <button class="multiple-choice-button" id="answer-1" style="background-color:rgb(255, 253, 69)"></button> \
+                <button class="multiple-choice-button" id="answer-2" style="background-color:rgb(84, 255, 69)"></button> \
+                <button class="multiple-choice-button" id="answer-3" style="background-color:rgb(69, 149, 255)"></button> \
+            </div> \ ';
 
-    function getData(){
-        $.getJSON(URL + "session_data", function(response) {
-            data = response;
-            if ($(answerBox).attr("type") != "multiple-choice") {
-                if (data["questions"][data["session"]["cur_question"]]["answer_type"] == "multiple-choice") {
-                    $(answerBox).attr("type", "multiple-choice")
-                    $(answerBox).html(multipleChoiceHtml);
-                }
-            }
-        });
-        setTimeout(getData, 10000);
+    var waitingForTeamsTemplate = ' \
+        <div class="waiting-for-teams"> \
+            Waiting for other teams to join... \
+            <br> \
+            <input type="submit" class="start" onclick="startQuiz()" href="#" value="Start Quiz"> \
+        </div>';
+
+    function startQuiz() {
+        $.getJSON(URL + "start_quiz");
     }
-    getData();
 
-    {% if question.answer_type == "multiple-choice" %}
-        $(".answer").click(function (event) {
+    function loadButtons() {
+        if (data["session"]["status"] == "waiting-for-teams") { // If previous status was waiting for teams
+            $(container).html(buttonsTemplate);
+        }
+        $(".multiple-choice-button").click(function (event) {
             if (answered == false) {
+                buttonsDisabled(true);
                 answered = true;
                 caller = event.target.id;
                 answer = caller.slice(-1);
                 console.log(answer);
-                $.getJSON( URL + "send_answer?team_id=" + teamName, function(data) {
+                $.getJSON( URL + "send_answer?team_id=" + $.urlParam('id') + "&answer=" + answer, function(data) {
 
                 });
             } else {
@@ -50,6 +50,40 @@
                 }
             }
         })
-    {% endif %}
+    }
+
+    function buttonsDisabled(disabled) {
+        if (disabled) {
+            $(".multiple-choice-button").addClass("inactive");
+        } else {
+            $(".multiple-choice-button").removeClass("inactive");
+        }
+    }
+
+    function getData() {
+        $.getJSON(URL + "session_data", function(response) {
+            if (response["session"]["teams"].length == 0) {
+                location.reload();
+            }
+            if (response["session"]["status"] == "waiting-for-teams") {
+                data = response;
+                $(container).html(waitingForTeamsTemplate)
+            } else {
+                loadButtons();
+                if (data === undefined) {
+                    cur_question = null;
+                } else {
+                    cur_question = data["session"]["cur_question"];
+                }
+                data = response;
+                if (cur_question != data["session"]["cur_question"]) {
+                    answered = false;
+                    buttonsDisabled(false);
+                }
+            }
+        });
+        setTimeout(getData, 5000);
+    }
+    getData();
 </script>
 {% endblock %}

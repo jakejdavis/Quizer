@@ -2,19 +2,25 @@
 {% block title %}Controller{% endblock %}
 {% block content %}
 <div class="controller-inputs">
+    <span id="status"></span>
     <input type="text" placeholder="Team Name" id="team-name" style="flex-grow: 2" autofocus>
-    <input type="button" value="Submit" onclick="registerController()">
+    <input type="submit" value="Submit" onclick="registerController()">
 </div>
 <script>
-teamNameInput = document.getElementById("team-name");
-function registerController() {
-    teamName = teamNameInput.value;
+    teamNameInput = document.getElementById("team-name");
+    statusText = document.getElementById("status");
 
-    $.getJSON( URL + "register_controller?name=" + teamName, function(data) {
-        if (data.response == "success") {
-            window.location.replace(window.location.origin + "/controller?id=" + data.id);
-        }
-    });
-}
+    function registerController() {
+        teamName = teamNameInput.value;
+
+        $.getJSON( URL + "register_controller?name=" + teamName, function(data) {
+            if (data.response == "success") {
+                $(statusText).html("Success! <br>");
+                window.location.replace(window.location.origin + "/controller?id=" + data.id);
+            } else {
+                $(statusText).html("Failed - Make sure there is less than 4 controllers setup and you have entered a name <br>")
+            }
+        });
+    }
 </script>
 {% endblock %}

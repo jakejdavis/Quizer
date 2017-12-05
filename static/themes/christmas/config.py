@@ -1,4 +1,4 @@
-config = {"app_name": "Jake's XMAS Quiz",
+config = {"app_name": "Jake's Christmas Quiz",
           "theme": "christmas"}
 
 questions = [{"question": "In which country does Santa have his own personal postcode HOH OHO?",
