@@ -12,8 +12,9 @@
 
     function registerController() {
         teamName = teamNameInput.value;
-
+        $(statusText).html("Trying to add controller... <br>");
         $.getJSON( URL + "register_controller?name=" + teamName, function(data) {
+
             if (data.response == "success") {
                 $(statusText).html("Success! <br>");
                 window.location.replace(window.location.origin + "/controller?id=" + data.id);

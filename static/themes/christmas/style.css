@@ -109,3 +109,21 @@ input[type=submit] {
     text-align: center;
     font-size: larger;
 }
+
+#XMLID_93_ {
+    animation-name: wee;
+    animation-duration: 120s;
+
+    animation-iteration-count: infinite;
+    transform-origin: 50% 50%;
+    display: inline-block;
+}
+
+@keyframes wee {
+    0% {
+        transform: translate(200vw, 0);
+    }
+    2%, 100% {
+        transform: translate(-100vw, 0);
+    }
+}
